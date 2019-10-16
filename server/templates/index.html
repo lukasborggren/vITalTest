@@ -5,6 +5,10 @@
     <title>Test site</title>
 </head>
 <body>
-<p>Use /api/{ehrId} or /api/pid/{pid} to fetch JSON object</p>
+<p>Use /api/ehr/{ehrId} or /api/pid/{pid} to fetch patient JSON object</p>
+<p>To update patient data, use a PUT with /api/update/{ehrId} with the data formatted:<br>
+    { "pulse": 80, "oxygen_saturation": 40, "blood_pressure_systolic": 127,
+    "blood_pressure_diastolic": 67, "breathing_frequency": 17, "alertness": "awake", "body_temperature": 37.3 }</p>
+<p>Use /patient_list to list all patients in the database</p>
 </body>
 </html>

@@ -76,14 +76,15 @@ class Patient(db.Model):
                 ]
             },
             'pulse': self.pulse,
-            'oxygen_Saturation': self.oxSaturation,
-            'breathing_Frequency': self.breathingFreq,
+            'oxygen_saturation': self.oxSaturation,
+            'breathing_frequency': self.breathingFreq,
             'alertness': self.alertness
         }
 
     def short_form(self):
         return {
-            'pid': self.Personnummer,
             'firstNames': self.firstNames,
-            'lastNames': self.lastNames
+            'lastNames': self.lastNames,
+            'pid': self.Personnummer,
+            'ehrId': self.ehrId
         }

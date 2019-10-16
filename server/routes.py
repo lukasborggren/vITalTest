@@ -1,5 +1,6 @@
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request
 from server import app
+from server import db
 from server.models import Patient
 
 
@@ -8,25 +9,42 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api')
-def api():
-    patient = Patient.query.filter_by(pid='19921030-0412').first()
-    return jsonify(patient.serialize())
-
-
-@app.route('/api/<string:patient_ehr>')
-def get_patient_ehrid(patient_ehr):
+@app.route('/api/ehr/<string:patient_ehr>', methods=['GET'])
+def get_patient_ehr(patient_ehr):
     patient = Patient.query.filter_by(ehrId=patient_ehr).first()
     return jsonify(patient.serialize())
 
 
-@app.route('/api/pid/<string:patient_pid>')
+@app.route('/api/pid/<string:patient_pid>', methods=['GET'])
 def get_patient_pid(patient_pid):
     patient = Patient.query.filter_by(Personnummer=patient_pid).first()
     return jsonify(patient.serialize())
 
 
-@app.route('/api/patient_list')
+# Expected data format: { "pulse": 80, "oxygen_saturation": 40, "blood_pressure_systolic": 127,
+# "blood_pressure_diastolic": 67, "breathing_frequency": 17, "alertness": "awake", "body_temperature": 37.3 }
+@app.route('/api/update/<string:patient_ehr>', methods=['PUT'])
+def update_patient(patient_ehr):
+
+    patient = Patient.query.filter_by(ehrId=patient_ehr).first()
+
+    patient.pulse = request.json['pulse']
+    patient.oxSaturation = request.json['oxygen_saturation']
+    patient.sysBloodPressure = request.json['blood_pressure_systolic']
+    patient.diaBloodPressure = request.json['blood_pressure_diastolic']
+    patient.breathingFreq = request.json['breathing_frequency']
+    patient.alertness = request.json['alertness']
+    patient.bodyTemp = request.json['body_temperature']
+
+    db.session.commit()
+
+
+
+
+
+
+
+@app.route('/patient_list', methods=['GET'])
 def patient_list():
     patients = Patient.query.all()
     patients = [p.short_form() for p in patients]
