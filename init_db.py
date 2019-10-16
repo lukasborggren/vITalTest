@@ -5,7 +5,7 @@ from server.models import Patient
 def add_patient(prId, fName, lName, gender, birth, ehrId, pid, pulse, oxSat, sysBp, diaBp, brFreq, alert, temp):
     db.session.add(Patient(id=prId,
                            firstNames=fName,
-                           lastName=lName,
+                           lastNames=lName,
                            gender=gender,
                            dateOfBirth=birth,
                            ehrId=ehrId,
