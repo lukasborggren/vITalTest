@@ -2,29 +2,88 @@ from server import db
 
 
 class Patient(db.Model):
-    pid = db.Column(db.String(13), primary_key=True)
-    name = db.Column(db.String(40))
-    sex = db.Column(db.String(40))
-    bp = db.Column(db.Integer)
+    id = db.Column(db.String(20), primary_key=True)
+    firstNames = db.Column(db.String(40))
+    lastNames = db.Column(db.String(40))
+    gender = db.Columns(db.String(8))
+    dateOfBirth = db.Column(db.String(20))
+
+    ehrId = db.Column(db.String(20))
+    Personnummer = db.Column(db.String(13))
+
     pulse = db.Column(db.Integer)
-    o2 = db.Column(db.Integer)
+    oxSaturation = db.Column(db.Integer)
+    sysBloodPressure = db.Column(db.Integer)
+    diaBloodPressure = db.Column(db.Integer)
+
+    breathingFreq = db.column(db.Integer)
+    alertness = db.column(db.String(10))
+    bodyTemp = db.Column(db.Float)
 
     def serialize(self):
         return {
-            'personal information': {
-                'PID': self.pid,
-                'name': self.name,
-                'sex': self.sex
+            'demographics': {
+                'id': self.id,
+                'firstNames': self.firstNames,
+                'lastNames': self.lastNames,
+                'gender': self.gender,
+                'dateOfBirth': self.dateOfBirth,
+                'additionalInfo': {
+                    'ehrId': self.ehrId,
+                    'Personnummer': self.Personnummer
+                }
             },
-            'vitals': {
-                'blood pressure': self.bp,
-                'oxygen saturation' : self.o2,
-                'pulse': self.pulse
-            }
+            'vital_signs': {
+                'body_temperature': [
+                    {
+                        'any_event': [
+                            {
+                                'temperature': [
+                                    {
+                                        '|magnitude': self.bodyTemp,
+                                        '|unit': '°C'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                'blood_pressure': [
+                    {
+                        'any_event': [
+                            {
+                                'systolic': [
+                                    {
+                                        '|unit': 'mm[Hg]',
+                                        '|magnitude': self.sysBloodPressure
+                                    }
+                                ],
+                                'diastolic': [
+                                    {
+                                        '|unit': 'mm[Hg]',
+                                        '|magnitude': self.diaBloodPressure
+                                    }
+                                ],
+                                'position': [
+                                    {
+                                        '|code': 'at1001',
+                                        '|value': 'Sitting'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            'pulse': self.pulse,
+            'oxygen_Saturation': self.oxSaturation,
+            'breathing_Frequency': self.breathingFreq,
+            'alertness': self.alertness
         }
 
     def short_form(self):
         return {
-            'PID': self.pid,
-            'name': self.name
+            'pid': self.Personnummer,
+            'firstNames': self.firstNames,
+            'lastNames': self.lastNames
         }
