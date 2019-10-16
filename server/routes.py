@@ -38,7 +38,10 @@ def update_patient(patient_ehr):
 
     db.session.commit()
 
-    return jsonify(patient.serialize())
+
+
+
+
 
 
 @app.route('/patient_list', methods=['GET'])
