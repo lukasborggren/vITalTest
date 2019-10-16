@@ -31,3 +31,4 @@ add_patient('123c', 'Nomen', 'Nescio', 'male', '1960-07-21', '8521e620-d38e-4fd6
             '19600721-8418', 82, 50, 102, 65, 18, 'critical', 38.2)
 
 db.session.commit()
+
