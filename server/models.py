@@ -5,7 +5,7 @@ class Patient(db.Model):
     id = db.Column(db.String(20), primary_key=True)
     firstNames = db.Column(db.String(40))
     lastNames = db.Column(db.String(40))
-    gender = db.Columns(db.String(8))
+    gender = db.Column(db.String(8))
     dateOfBirth = db.Column(db.String(20))
 
     ehrId = db.Column(db.String(20))
@@ -16,8 +16,8 @@ class Patient(db.Model):
     sysBloodPressure = db.Column(db.Integer)
     diaBloodPressure = db.Column(db.Integer)
 
-    breathingFreq = db.column(db.Integer)
-    alertness = db.column(db.String(10))
+    breathingFreq = db.Column(db.Integer)
+    alertness = db.Column(db.String(10))
     bodyTemp = db.Column(db.Float)
 
     def serialize(self):

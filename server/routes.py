@@ -14,14 +14,14 @@ def api():
     return jsonify(patient.serialize())
 
 
-@app.route('/api/<string:patient_ehr>')
-def get_patient(patient_ehr):
+@app.route('/api/ehr/<string:patient_ehr>')
+def get_patient_ehr(patient_ehr):
     patient = Patient.query.filter_by(ehrId=patient_ehr).first()
     return jsonify(patient.serialize())
 
 
-@app.route('/api/<string:patient_pid>')
-def get_patient(patient_pid):
+@app.route('/api/pid/<string:patient_pid>')
+def get_patient_pid(patient_pid):
     patient = Patient.query.filter_by(Personnummer=patient_pid).first()
     return jsonify(patient.serialize())
 
