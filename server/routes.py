@@ -38,6 +38,8 @@ def update_patient(patient_ehr):
 
     db.session.commit()
 
+    return "updated patient"
+
 
 
 
