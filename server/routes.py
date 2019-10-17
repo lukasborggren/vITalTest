@@ -37,7 +37,10 @@ def update_patient(patient_ehr):
 
     db.session.commit()
 
-    return jsonify(patient.serialize())
+
+
+
+
 
 
 # Expected data format: { "username": "useruser", "password": "passpass" }
