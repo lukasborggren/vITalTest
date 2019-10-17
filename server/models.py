@@ -88,3 +88,24 @@ class Patient(db.Model):
             'pid': self.Personnummer,
             'ehrId': self.ehrId
         }
+
+
+class Staff(db.Model):
+    username = db.Column(db.String(20), primary_key=True)
+    password = db.Column(db.String(20))
+    firstNames = db.Column(db.String(40))
+    lastNames = db.Column(db.String(40))
+    position = db.Column(db.String(20))
+
+    def serialize(self):
+        return {
+            'firstNames': self.firstNames,
+            'lastNames': self.lastNames,
+            'position': self.position
+        }
+
+    def short_form(self):
+        return {
+            'username': self.username,
+            'password': self.password
+        }

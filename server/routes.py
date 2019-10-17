@@ -1,7 +1,7 @@
 from flask import render_template, jsonify, request
 from server import app
 from server import db
-from server.models import Patient
+from server.models import Patient, Staff
 
 
 @app.route('/')
@@ -25,7 +25,6 @@ def get_patient_pid(patient_pid):
 # "blood_pressure_diastolic": 67, "breathing_frequency": 17, "alertness": "awake", "body_temperature": 37.3 }
 @app.route('/api/update/<string:patient_ehr>', methods=['PUT'])
 def update_patient(patient_ehr):
-
     patient = Patient.query.filter_by(ehrId=patient_ehr).first()
 
     patient.pulse = request.json['pulse']
@@ -41,9 +40,14 @@ def update_patient(patient_ehr):
     return "updated patient"
 
 
-
-
-
+# Expected data format: { "username": "useruser", "password": "passpass" }
+@app.route('/api/authenticate', methods=['GET'])
+def get_staff_authorization():
+    staff = Staff.query.filter_by(username=request.json['username']).first()
+    if staff.password == request.json['password']:
+        return jsonify(staff.serialize())
+    else:
+        return '{}'
 
 
 @app.route('/patient_list', methods=['GET'])
@@ -51,3 +55,10 @@ def patient_list():
     patients = Patient.query.all()
     patients = [p.short_form() for p in patients]
     return jsonify(patients)
+
+
+@app.route('/staff_list', methods=['GET'])
+def staff_list():
+    staff = Staff.query.all()
+    staff = [s.short_form() for s in staff]
+    return jsonify(staff)

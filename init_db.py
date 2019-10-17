@@ -1,5 +1,5 @@
 from server import db
-from server.models import Patient
+from server.models import Patient, Staff
 
 
 def add_patient(prId, fName, lName, gender, birth, ehrId, pid, pulse, oxSat, sysBp, diaBp, brFreq, alert, temp):
@@ -19,6 +19,10 @@ def add_patient(prId, fName, lName, gender, birth, ehrId, pid, pulse, oxSat, sys
                            bodyTemp=temp))
 
 
+def add_staff(username, password, fName, lName, position):
+    db.session.add(Staff(username=username, password=password, firstNames=fName, lastNames=lName, position=position))
+
+
 db.reflect()
 db.drop_all()
 db.create_all()
@@ -29,6 +33,11 @@ add_patient('123b', 'Jane', 'Doe', 'female', '1987-01-08', '8521e620-d38e-4fd6-9
             '19870108-0766', 72, 60, 90, 60, 14, 'awake', 36.9)
 add_patient('123c', 'Nomen', 'Nescio', 'male', '1960-07-21', '8521e620-d38e-4fd6-9071-oc74on984kn3',
             '19600721-8418', 82, 50, 102, 65, 18, 'critical', 38.2)
+
+add_staff('useruser', 'passpass', 'Lorem', 'Ipsum', 'Nurse')
+add_staff('myusername', 'mypassword', 'Person', 'Personsson', 'Doctor')
+add_staff('junguser', 'jungpass123', 'Carl', 'Jung', 'Doctor')
+
 
 db.session.commit()
 
