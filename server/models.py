@@ -103,3 +103,9 @@ class Staff(db.Model):
             'lastNames': self.lastNames,
             'position': self.position
         }
+
+    def short_form(self):
+        return {
+            'username': self.username,
+            'password': self.password
+        }

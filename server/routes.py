@@ -38,11 +38,6 @@ def update_patient(patient_ehr):
     db.session.commit()
 
 
-
-
-
-
-
 # Expected data format: { "username": "useruser", "password": "passpass" }
 @app.route('/api/authenticate', methods=['GET'])
 def get_staff_authorization():
@@ -63,4 +58,5 @@ def patient_list():
 @app.route('/staff_list', methods=['GET'])
 def staff_list():
     staff = Staff.query.all()
+    staff = [s.short_form() for s in staff]
     return jsonify(staff)
