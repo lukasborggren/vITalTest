@@ -47,7 +47,7 @@ def get_staff_authorization():
     if staff.password == request.json['password']:
         return jsonify(staff.serialize())
     else:
-        return '{}'
+        return 'WRONG!'
 
 
 @app.route('/patient_list', methods=['GET'])
