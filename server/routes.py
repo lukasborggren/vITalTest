@@ -41,7 +41,7 @@ def update_patient(patient_ehr):
 
 
 # Expected data format: { "username": "useruser", "password": "passpass" }
-@app.route('/api/authenticate', methods=['GET'])
+@app.route('/api/authenticate', methods=['GET','POST'])
 def get_staff_authorization():
     staff = Staff.query.filter_by(username=request.json['username']).first()
     if staff.password == request.json['password']:
