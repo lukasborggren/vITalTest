@@ -115,7 +115,7 @@ class Staff(db.Model):
 
     def encode_token(self, user_id):
         payload = {
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=1),
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=0,seconds=5, hours=1),
             'iat' : datetime.datetime.utcnow(),
             'sub' : user_id
         }

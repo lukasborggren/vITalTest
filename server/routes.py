@@ -40,7 +40,8 @@ def update_patient(patient_ehr):
     return "updated patient"
 
 
-# Expected data format: { "username": "useruser", "password": "passpass" }
+# Expected data format: { "username": "useruser", "password": "passpass" }, checks validity of login data and creates
+# an access token for the user
 @app.route('/api/login', methods=['GET','POST'])
 def get_staff_login():
     data = request.get_json()
@@ -70,7 +71,8 @@ def get_staff_login():
         return make_response(jsonify(response)), 500
 
 
-@app.route('/api/authenticate', methods=['POST'])
+# checks that the request was made with a valid access token in the 'Authorization' header
+@app.route('/api/authenticate', methods=['GET','POST'])
 def authenticate():
     auth_header = request.headers.get('Authorization')
     if auth_header:
@@ -99,6 +101,7 @@ def authenticate():
         }
         return make_response(jsonify(response)), 401
 
+# Invalidates the token in 'Authorization' header
 @app.route('/api/logout', methods=['POST'])
 def logout():
     auth_header = request.headers.get('Authorization')
