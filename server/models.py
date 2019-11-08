@@ -1,4 +1,6 @@
 from server import db
+import datetime
+import jwt, app
 
 
 class Patient(db.Model):
@@ -109,3 +111,15 @@ class Staff(db.Model):
             'username': self.username,
             'password': self.password
         }
+
+    def encode_token(self, user_id):
+        payload = {
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=0,seconds=5),
+            'iat' : datetime.datetime.utcnow(),
+            'sub' : user_id
+        }
+        return jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
