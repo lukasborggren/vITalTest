@@ -1,6 +1,6 @@
-from server import db
+from server import db, app
 import datetime
-import jwt, app
+import jwt
 
 
 class Patient(db.Model):
@@ -93,7 +93,8 @@ class Patient(db.Model):
 
 
 class Staff(db.Model):
-    username = db.Column(db.String(20), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(20))
     firstNames = db.Column(db.String(40))
     lastNames = db.Column(db.String(40))
@@ -114,7 +115,7 @@ class Staff(db.Model):
 
     def encode_token(self, user_id):
         payload = {
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=0,seconds=5),
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=1),
             'iat' : datetime.datetime.utcnow(),
             'sub' : user_id
         }
@@ -123,3 +124,35 @@ class Staff(db.Model):
             app.config.get('SECRET_KEY'),
             algorithm='HS256'
         )
+
+    @staticmethod
+    def decode_token(token):
+        try:
+            payload = jwt.decode(token, app.config.get('SECRET_KEY'))
+            if BlacklistToken.check_blacklist(token):
+                return 'Blacklisted token please log in again.'
+            else:
+                return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Token expired please log in again'
+        except jwt.InvalidTokenError:
+            return 'Invalid token'
+
+
+class BlacklistToken(db.Model):
+    id = db.Column(db.Integer,primary_key=True, autoincrement=True)
+    token = db.Column(db.String(500), unique=True, nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self,token):
+        self.token = token
+        self.blacklisted_on = datetime.datetime.now()
+
+    @staticmethod
+    def check_blacklist(token):
+        res = BlacklistToken.query.filter_by(token=str(token)).first()
+        if res:
+            return True
+        else:
+            return False
+

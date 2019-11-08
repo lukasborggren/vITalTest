@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, make_response
 from server import app
 from server import db
 from server.models import Patient, Staff
@@ -41,14 +41,63 @@ def update_patient(patient_ehr):
 
 
 # Expected data format: { "username": "useruser", "password": "passpass" }
-@app.route('/api/authenticate', methods=['GET','POST'])
-def get_staff_authorization():
-    staff = Staff.query.filter_by(username=request.json['username']).first()
-    if staff.password == request.json['password']:
-        return jsonify(staff.serialize())
-    else:
-        return '{}'
+@app.route('/api/login', methods=['GET','POST'])
+def get_staff_login():
+    data = request.get_json()
+    try:
+        staff = Staff.query.filter_by(username=data['username']).first()
+        if staff and data['password'] == staff.password:
+            auth_token = staff.encode_token(staff.id)
+            if auth_token:
+                response = {
+                    'status' : 'success',
+                    'message' : 'Logged in',
+                    'auth_token' : auth_token.decode()
+                }
+                return make_response(jsonify(response)), 200
+        else:
+            response = {
+                'satus': 'fail',
+                'message': 'invalid password or username'
+            }
+            return make_response(jsonify(response)), 404
+    except Exception as e:
+        print(e)
+        response = {
+            'status' : 'fail',
+            'message' : 'Try again'
+        }
+        return make_response(jsonify(response)), 500
 
+
+@app.route('/api/authenticate', methods=['POST'])
+def authenticate():
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[0]
+    else:
+        auth_token = ""
+    if auth_token:
+        resp = Staff.decode_token(auth_token)
+        if isinstance(resp, int):
+            staff = Staff.query.filter_by(id=resp).first()
+            response = {
+                'status': 'success',
+                'data' : {'user':staff.username}
+            }
+            return make_response(jsonify(response)), 200
+        else:
+            response = {
+                'status': 'fail',
+                'message': resp
+            }
+            return make_response(jsonify(response)), 401
+    else:
+        response = {
+            'status' : 'fail',
+            'message': 'provide an auth token in Authorization header'
+        }
+        return make_response(jsonify(response)), 401
 
 @app.route('/patient_list', methods=['GET'])
 def patient_list():
