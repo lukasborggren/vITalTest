@@ -1,7 +1,7 @@
 from flask import render_template, jsonify, request, make_response
 from server import app
 from server import db
-from server.models import Patient, Staff
+from server.models import Patient, Staff, BlacklistToken
 
 
 @app.route('/')
@@ -60,7 +60,7 @@ def get_staff_login():
                 'satus': 'fail',
                 'message': 'invalid password or username'
             }
-            return make_response(jsonify(response)), 404
+            return make_response(jsonify(response)), 401
     except Exception as e:
         print(e)
         response = {
@@ -98,6 +98,45 @@ def authenticate():
             'message': 'provide an auth token in Authorization header'
         }
         return make_response(jsonify(response)), 401
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[0]
+    else:
+        auth_token = ""
+    if auth_token:
+        resp = Staff.decode_token(auth_token)
+        if isinstance(resp, int):
+            blacklist_token = BlacklistToken(auth_token)
+            try:
+                db.session.add(blacklist_token)
+                db.session.commit()
+                response = {
+                    'status': 'success',
+                    'message': 'Logged out'
+                }
+                return make_response(jsonify(response)), 200
+            except Exception as e:
+                response = {
+                    'status': 'fail',
+                    'message': e
+                }
+                return make_response(jsonify(response)), 200
+        else:
+            response = {
+                'status': 'fail',
+                'message': resp
+            }
+            return make_response(jsonify(response)), 401
+    else:
+        response = {
+            'status': 'fail',
+            'message': 'Invalid token'
+        }
+        return make_response(jsonify(response)), 403
+
 
 @app.route('/patient_list', methods=['GET'])
 def patient_list():
