@@ -28,7 +28,7 @@ db.drop_all()
 db.create_all()
 
 add_patient('123a', 'John', 'Doe', 'male', '1992-10-30', '8521e620-d38e-4fd6-9071-f785c2ece9b3',
-            '19921030-0412', 80, 40, 127, 67, 17, 'awake', 37.3)
+            '19791111-0017', 80, 40, 127, 67, 17, 'awake', 37.3)
 add_patient('123b', 'Jane', 'Doe', 'female', '1987-01-08', '8521e620-d38e-4fd6-9071-kj45ng60n6v4',
             '19870108-0766', 72, 60, 90, 60, 14, 'awake', 36.9)
 add_patient('123c', 'Nomen', 'Nescio', 'male', '1960-07-21', '8521e620-d38e-4fd6-9071-oc74on984kn3',
@@ -40,4 +40,3 @@ add_staff('junguser', 'jungpass123', 'Carl', 'Jung', 'Doctor')
 
 
 db.session.commit()
-
